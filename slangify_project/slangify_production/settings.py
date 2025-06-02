@@ -32,6 +32,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://slangify.onrender.com/']
 
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uw&zwa*&5k(0^@#)gp1@z8ac*j+(t5llkhgl4tked2juau51pt')
 
 # Application definition
 
