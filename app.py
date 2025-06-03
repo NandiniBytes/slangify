@@ -6,10 +6,6 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
-# API endpoint (use BACKEND_URL from environment, fallback to production URL)
-BACKEND_URL = os.getenv("BACKEND_URL", "https://slangify.onrender.com")
-API_URL = f"{BACKEND_URL}/api/"
-
 st.set_page_config(page_title="Slangify: Translate Like a Gen Z Pro", page_icon="🎮", layout="centered")
 
 # Custom CSS for Authentic Y2K Arcade Interface
@@ -237,6 +233,10 @@ h2 {
 }
 </style>
 """, unsafe_allow_html=True)
+
+# API endpoint
+BACKEND_URL = os.getenv("BACKEND_URL", "https://slangify.onrender.com")
+API_URL = f"{BACKEND_URL}/api/"
 
 def fetch_slang_of_the_day():
     try:
