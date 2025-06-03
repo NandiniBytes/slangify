@@ -13,7 +13,7 @@ st.markdown("""
 /* Global styles */
 body {
     background: #000000;
-    color: #FFD700;
+    color: #FFD700;  /* Gold text */
     font-family: 'Press Start 2P', cursive;
     font-size: 12px;
     line-height: 1.5;
@@ -24,15 +24,15 @@ body {
 /* Arcade cabinet style container */
 .game-cabinet {
     background: #1a1a1a;
-    border: 12px solid #8B0000;
+    border: 12px solid #8B0000;  /* Dark red */
     border-radius: 8px;
     padding: 15px;
     margin: 0 auto;
     max-width: 600px;
     position: relative;
     box-shadow: 
-        0 0 0 4px #FF0000,
-        0 0 20px rgba(255, 0, 0, 0.7),
+        0 0 0 4px #FF0000,  /* Red inner border */
+        0 0 20px rgba(255, 0, 0, 0.7),  /* Red glow */
         inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -55,10 +55,10 @@ body {
 
 /* Title style with pixelated text-shadow */
 h1 {
-    color: #FF0000;
+    color: #FF0000;  /* Red */
     text-shadow: 
-        3px 3px 0 #FFD700,
-        6px 6px 0 #0000FF;
+        3px 3px 0 #FFD700,  /* Gold shadow */
+        6px 6px 0 #0000FF;   /* Blue shadow */
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;
@@ -67,7 +67,7 @@ h1 {
 
 /* Subheaders */
 h2 {
-    color: #00FF00;
+    color: #00FF00;  /* Neon green */
     font-size: 16px;
     margin: 15px 0 10px 0;
     text-shadow: 2px 2px 0 #000000;
@@ -124,7 +124,7 @@ h2 {
     padding: 5px;
 }
 
-/* Slang cards */
+/* Slang cards - like arcade high score displays */
 .slang-card {
     background-color: #000000;
     border: 3px solid #00FF00;
@@ -147,7 +147,7 @@ h2 {
     background: linear-gradient(to right, #FF0000, #00FF00, #0000FF, #FF0000);
 }
 
-/* Expander */
+/* Expander - like arcade cabinet controls */
 .stExpander {
     border: 2px solid #FFD700;
     border-radius: 0;
@@ -159,7 +159,7 @@ h2 {
     font-size: 12px;
 }
 
-/* Alerts */
+/* Alerts - like arcade error messages */
 .stAlert {
     background-color: #000000;
     color: #FF0000;
@@ -189,7 +189,7 @@ h2 {
     border: none;
 }
 
-/* Blinking text */
+/* Blinking text for important elements */
 .blink {
     animation: blink 1s step-end infinite;
 }
@@ -197,7 +197,7 @@ h2 {
     50% { opacity: 0; }
 }
 
-/* Loading animation */
+/* Pixelated loading animation */
 .loading-pixel {
     display: inline-block;
     width: 8px;
@@ -217,13 +217,14 @@ h2 {
 """, unsafe_allow_html=True)
 
 # API endpoint
-BACKEND_URL = "https://slangify.onrender.com"
+BACKEND_URL = "https://slangify.onrender.com"  # Your live backend URL
 API_URL = f"{BACKEND_URL}/api/"
 
 def translate_slang(slang_term):
     slang_term = slang_term.strip().lower()
     if not slang_term:
         return {}
+
     try:
         response = requests.get(f"{API_URL}slangs/{slang_term}/", timeout=5)
         if response.status_code == 200:
@@ -234,11 +235,11 @@ def translate_slang(slang_term):
         else:
             st.error(f"ERROR {response.status_code}: TRANSLATION FAILED")
             return {}
-    except requests.exceptions.ConnectionError:
-        st.error("CONNECTION ERROR: CANNOT CONNECT TO BACKEND API")
+    except requests.exceptions.ConnectionError as e:
+        st.error(f"CONNECTION ERROR: CANNOT CONNECT TO BACKEND API")
         return {}
     except requests.exceptions.Timeout:
-        st.error("TIMEOUT: SERVER NOT RESPONDING")
+        st.error(f"TIMEOUT: SERVER NOT RESPONDING")
         return {}
     except requests.exceptions.RequestException as e:
         st.error(f"API ERROR: {str(e)}")
@@ -250,7 +251,7 @@ def add_slang(term, meaning, category_id, origin):
         "meaning": meaning.strip(),
         "category_id": category_id,
         "origin": origin.strip() if origin else "",
-        "popularity": 5
+        "popularity": 5  # Default popularity
     }
     try:
         response = requests.post(f"{API_URL}slangs/", json=data, timeout=5)
@@ -265,31 +266,78 @@ def add_slang(term, meaning, category_id, origin):
         else:
             st.error(f"ERROR {response.status_code}: ADD SLANG FAILED")
             return {}
-    except requests.exceptions.ConnectionError:
-        st.error("CONNECTION ERROR: CANNOT CONNECT TO BACKEND API")
+    except requests.exceptions.ConnectionError as e:
+        st.error(f"CONNECTION ERROR: CANNOT CONNECT TO BACKEND API")
         return {}
     except requests.exceptions.Timeout:
-        st.error("TIMEOUT: SERVER NOT RESPONDING")
+        st.error(f"TIMEOUT: SERVER NOT RESPONDING")
         return {}
     except requests.exceptions.RequestException as e:
         st.error(f"API ERROR: {str(e)}")
         return {}
 
-# Main App Interface
+# Main App - Arcade Cabinet Interface
 st.markdown('<div class="game-cabinet crt">', unsafe_allow_html=True)
 
-# Title
+# Title with arcade style
 st.markdown("""
 <h1>SLANGIFY<span class="blink">_</span></h1>
 <p style="text-align: center; color: #FFD700; font-size: 10px;">TRANSLATE GEN-Z SLANG • HIGH SCORE: 25000</p>
 <div class="pixel-divider"></div>
 """, unsafe_allow_html=True)
 
-# Translation Section
-st.markdown("<h2>TRANSLATE SLANG</h2>", unsafe_allow_html=True)
+# Translation Section - Like an arcade game input
+st.markdown("""
+<h2>TRANSLATE SLANG</h2>
+""", unsafe_allow_html=True)
 
 col1, col2 = st.columns([3, 1])
 with col1:
     user_input = st.text_input("ENTER SLANG TERM:", placeholder="E.G. 'YEET'", key="slang_input")
 with col2:
-    st.markdown("<div style='height: 27px; display:block;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 27px; display: flex; align-items: flex-end;'>", unsafe_allow_html=True)
+    translate_button = st.button("TRANSLATE")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+if translate_button:
+    if user_input:
+        with st.spinner("".join([f'<span class="loading-pixel"></span>' for _ in range(3)])):
+            slang_data = translate_slang(user_input)
+    if slang_data:
+            st.markdown(f"""
+            <div class="slang-card">
+            <div style="color: #FF0000; margin-bottom: 5px;">{slang_data.get('term', 'N/A').upper()}</div>
+            <div><span style="color: #00FF00;">MEANING:</span> {slang_data.get('meaning', 'N/A')}</div>
+            <div><span style="color: #00FF00;">ORIGIN:</span> {slang_data.get('origin', 'N/A')}</div>
+            <div><span style="color: #00FF00;">EXAMPLE:</span> {slang_data.get('usage_example', 'N/A')}</div>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="stAlert">NO TRANSLATION FOUND</div>', unsafe_allow_html=True)
+else:
+    st.markdown('<div class="stAlert">PLEASE ENTER A TERM</div>', unsafe_allow_html=True)
+
+# Add New Slang - Like a high score entry
+with st.expander("++ ADD NEW SLANG ++"):
+    new_term = st.text_input("SLANG TERM:", key="new_term")
+    new_meaning = st.text_area("MEANING:", key="new_meaning")
+    new_origin = st.text_input("ORIGIN (OPTIONAL):", key="new_origin")
+    if st.button("SUBMIT SLANG"):
+        if new_term and new_meaning:
+            result = add_slang(new_term, new_meaning, 1, new_origin)  # Default category_id=1
+            if result:
+                st.markdown('<div class="stAlert" style="color: #00FF00;">SLANG ADDED SUCCESSFULLY!</div>', unsafe_allow_html=True)
+            else:
+                st.markdown('<div class="stAlert">FAILED TO ADD SLANG</div>', unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="stAlert">FILL ALL REQUIRED FIELDS</div>', unsafe_allow_html=True)
+
+# Arcade cabinet footer
+st.markdown("""
+<div class="pixel-divider"></div>
+<div style="text-align: center; color: #FFD700; font-size: 8px; margin-top: 20px;">
+CREDIT 00 • © 2023 SLANGIFY ARCADE • 1UP 25000 • HIGH SCORE 25000 • 2UP 00322
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)  # Close game-cabinet div
