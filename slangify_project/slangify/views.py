@@ -11,7 +11,10 @@ from django.conf import settings
 import random
 
 # Initialize Vertex AI
-vertexai.init(project=settings.GEMINI_PROJECT_ID, location=settings.GEMINI_LOCATION)
+try:
+    vertexai.init(project=settings.GEMINI_PROJECT_ID, location=settings.GEMINI_LOCATION)
+except Exception as e:
+    print(f"Failed to initialize Vertex AI: {str(e)}")
 
 class SlangViewSet(viewsets.ModelViewSet):
     queryset = Slang.objects.all()
@@ -26,7 +29,7 @@ class SlangViewSet(viewsets.ModelViewSet):
         except Slang.DoesNotExist:
             # Term not found in database, fall back to Gemini API
             try:
-                model = GenerativeModel("gemini-2.0-flash-001")
+                model = GenerativeModel("gemini-2.0-flash-001")  # Updated model name
                 prompt = f"What does the slang term '{term}' mean? Provide a concise definition and, if possible, its origin or cultural context."
                 response = model.generate_content(
                     prompt,
@@ -44,7 +47,7 @@ class SlangViewSet(viewsets.ModelViewSet):
                     "category": {"id": None, "name": "Unknown", "description": "N/A"},
                     "origin": "Retrieved from Gemini API",
                     "popularity": 0,
-                    "created_at": "2025-06-02T13:09:00+05:30",
+                    "created_at": "2025-06-03T10:37:00+05:30",
                     "usage_example": "N/A",
                     "cultural_origin": "N/A",
                     "trendiness_score": 0
@@ -71,7 +74,7 @@ class SlangViewSet(viewsets.ModelViewSet):
 
             # Generate context using Gemini API
             try:
-                model = GenerativeModel("gemini-2.0-flash-001")
+                model = GenerativeModel("gemini-1.5-flash-001")  # Updated model name
                 prompt = (
                     f"Generate a fun, casual sentence or short context using the Gen Z slang term '{slang.term}' "
                     f"which means '{slang.meaning}'. The sentence should reflect how a Gen Z person might use it on social media."
