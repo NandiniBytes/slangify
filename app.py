@@ -1,11 +1,6 @@
 import streamlit as st
 import requests
-from dotenv import load_dotenv
 import os
-
-# Load environment variables from .env file
-load_dotenv()
-
 st.set_page_config(page_title="Slangify: Translate Like a Gen Z Pro", page_icon="🎮", layout="centered")
 
 # Custom CSS for Authentic Y2K Arcade Interface
@@ -235,7 +230,7 @@ h2 {
 """, unsafe_allow_html=True)
 
 # API endpoint
-BACKEND_URL = os.getenv("BACKEND_URL", "https://slangify.onrender.com")
+BACKEND_URL = "https://slangify.onrender.com"  # Your live backend URL
 API_URL = f"{BACKEND_URL}/api/"
 
 def fetch_slang_of_the_day():
