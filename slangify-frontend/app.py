@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import os
 
-  st.set_page_config(page_title="Slangify: Translate Like a Gen Z Pro", page_icon="🎮", layout="centered")
+st.set_page_config(page_title="Slangify: Translate Like a Gen Z Pro", page_icon="🎮", layout="centered")
 
   # Custom CSS for Authentic Y2K Arcade Interface
   st.markdown("""
