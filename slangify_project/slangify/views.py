@@ -5,16 +5,15 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from .models import Slang, Category
 from .serializers import SlangSerializer, CategorySerializer
-import vertexai
-from vertexai.generative_models import GenerativeModel
-from django.conf import settings
+import google.generativeai as genai
+import os
 import random
 
-# Initialize Vertex AI
+# Configure Gemini API
 try:
-    vertexai.init(project=settings.GEMINI_PROJECT_ID, location=settings.GEMINI_LOCATION)
+    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 except Exception as e:
-    print(f"Failed to initialize Vertex AI: {str(e)}")
+    print(f"Failed to configure Gemini API: {str(e)}")
 
 class SlangViewSet(viewsets.ModelViewSet):
     queryset = Slang.objects.all()
@@ -29,7 +28,7 @@ class SlangViewSet(viewsets.ModelViewSet):
         except Slang.DoesNotExist:
             # Term not found in database, fall back to Gemini API
             try:
-                model = GenerativeModel("gemini-2.0-flash-001")  # Updated model name
+                model = genai.GenerativeModel("gemini-2.0-flash")
                 prompt = f"What does the slang term '{term}' mean? Provide a concise definition and, if possible, its origin or cultural context."
                 response = model.generate_content(
                     prompt,
@@ -47,7 +46,7 @@ class SlangViewSet(viewsets.ModelViewSet):
                     "category": {"id": None, "name": "Unknown", "description": "N/A"},
                     "origin": "Retrieved from Gemini API",
                     "popularity": 0,
-                    "created_at": "2025-06-03T10:37:00+05:30",
+                    "created_at": "2025-06-03T10:48:00+05:30",
                     "usage_example": "N/A",
                     "cultural_origin": "N/A",
                     "trendiness_score": 0
@@ -74,7 +73,7 @@ class SlangViewSet(viewsets.ModelViewSet):
 
             # Generate context using Gemini API
             try:
-                model = GenerativeModel("gemini-1.5-flash-001")  # Updated model name
+                model = genai.GenerativeModel("gemini-1.5-flash")
                 prompt = (
                     f"Generate a fun, casual sentence or short context using the Gen Z slang term '{slang.term}' "
                     f"which means '{slang.meaning}'. The sentence should reflect how a Gen Z person might use it on social media."
